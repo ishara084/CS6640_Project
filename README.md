@@ -49,12 +49,17 @@
 ### 2. Steps
 - NOTE: Trained models and pretrained model files are not pushed because of file size limitation(You can execute the code to generate them, if needed)
 - Install necessary libraries before executing the notebook files
-  - pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-  - pip install tensorflow[and-cuda]
-  - pip install -U scikit-learn
-  - pip install pandas
-  - pip install matplotlib
-  - pip install ptflops
+  - ```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124```
+  - ```pip install tensorflow[and-cuda]```
+  - ```pip install -U scikit-learn```
+  - ```pip install pandas```
+  - ```pip install matplotlib```
+  - ```pip install ptflops```
+
+### 3. Notes
+  - Each model has a separate notebook.
+  - In model training loop, the best version of the model is saved based on validation loss if I need to train it more later.
+  - Training evaluation metrics are logged in ```model_outputs_data/model_evaluation_logs``` directory  for comparisons.
 
 Source of the Images & Access Conditions
 - Dataset used: https://www.kaggle.com/competitions/internal-waves/data
