@@ -55,3 +55,8 @@
   - pip install pandas
   - pip install matplotlib
   - pip install ptflops
+
+Source of the Images & Access Conditions
+- Dataset used: https://www.kaggle.com/competitions/internal-waves/data
+- Dataset sourced from: https://xwaves.ifremer.fr/#/quicklook
+- Use of the images is regulated by: http://en.data.ifremer.fr/All-about-data/Data-access-conditions
