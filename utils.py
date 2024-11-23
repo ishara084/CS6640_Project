@@ -1,15 +1,17 @@
+import torch
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset
 import pandas as pd
 from PIL import Image
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
 
 
-# Image transformation in a standard format
+# Image transformation pipeline in a standard format
 def get_transform(resize_image_size):
     return transforms.Compose([
-        transforms.Grayscale(num_output_channels=3),  # Convert grayscale-like images to 3 channels
+        # transforms.Grayscale(num_output_channels=3),  # Convert grayscale-like images to 3 channels
         transforms.Resize(resize_image_size),  # Resize images
         transforms.ToTensor(),  # Convert images to tensors
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])  # Normalize
@@ -18,18 +20,35 @@ def get_transform(resize_image_size):
 
 # Prepare test/train/val data
 def prepare_train_test_data(transform):
-    train_val_dataset = SARImageDataset(csv_file="data/train.csv", image_folder="data/images_train",
-                                        transform=transform)
+    train_val_dataset = SARImageDataset(csv_file="data/train.csv", image_folder="data/images_train",transform=transform)
     test_dataset = SARImageDataset(csv_file="data/test.csv", image_folder="data/images_test", transform=transform)
 
-    # Split into training and validation datasets
-    train_size = int(0.8 * len(train_val_dataset))  # 80% for training
-    val_size = len(train_val_dataset) - train_size  # 20% for validation
-    train_dataset, val_dataset = random_split(train_val_dataset, [train_size, val_size])
+    # Extract labels from the train_val_dataset for stratification
+    labels = []
+    for idx in range(len(train_val_dataset)):
+        _, label = train_val_dataset[idx]
+        if isinstance(label, torch.Tensor):
+            label = label.item()
+        labels.append(label)
 
-    return [DataLoader(train_dataset, batch_size=32, shuffle=True),
-            DataLoader(val_dataset, batch_size=32, shuffle=False),
-            DataLoader(test_dataset, batch_size=32, shuffle=False)]
+    # Perform stratified split
+    train_indices, val_indices = train_test_split(
+        list(range(len(train_val_dataset))),
+        test_size=0.2,  # 20% for validation
+        stratify=labels,
+        random_state=42  # For reproducibility
+    )
+
+    # Create training and validation subsets
+    train_dataset = Subset(train_val_dataset, train_indices)
+    val_dataset = Subset(train_val_dataset, val_indices)
+
+    # Create DataLoaders
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+    return train_loader, val_loader, test_loader
 
 
 # Data Handler Class for image preparations
@@ -47,9 +66,15 @@ class SARImageDataset(Dataset):
         label = self.data.iloc[idx, 1]
         image = Image.open(img_name)
 
+        # Ensure image is in 'RGB' mode
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+
         if self.transform:
             image = self.transform(image)
 
+        # Convert label to appropriate data type
+        label = int(label)
         return image, label
 
 
