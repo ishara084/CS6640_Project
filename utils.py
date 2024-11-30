@@ -6,15 +6,20 @@ from PIL import Image
 from torch.utils.data import DataLoader, random_split, Subset
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
+from collections import Counter
 
 
 # Image transformation pipeline in a standard format
-def get_transform(resize_image_size):
+def get_transform(resize_image_size, normalize_mean=None, normalize_std=None):
+    if normalize_mean is None:
+        normalize_mean = [0.5, 0.5, 0.5]
+    if normalize_std is None:
+        normalize_std = [0.5, 0.5, 0.5]
     return transforms.Compose([
         # transforms.Grayscale(num_output_channels=3),  # Convert grayscale-like images to 3 channels
         transforms.Resize(resize_image_size),  # Resize images
         transforms.ToTensor(),  # Convert images to tensors
-        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])  # Normalize
+        transforms.Normalize(normalize_mean, normalize_std)  # Normalize
     ])
 
 
@@ -79,7 +84,7 @@ class SARImageDataset(Dataset):
 
 
 # Common method to calculate and print evaluation metrics
-def calculate_evaluation_metrics(all_labels, all_preds, model_keyword):
+def calculate_evaluation_metrics(all_labels, all_preds, all_probs, model_keyword):
     # Compute evaluation metrics
     accuracy = accuracy_score(all_labels, all_preds)
     precision = precision_score(all_labels, all_preds, average='binary')
@@ -102,9 +107,25 @@ def calculate_evaluation_metrics(all_labels, all_preds, model_keyword):
     # Save prediction data to a CSV file (As a backup)
     results_df = pd.DataFrame({
         "true_labels": all_labels,
-        "predicted_labels": all_preds
+        "predicted_labels": all_preds,
+        "positive_probabilities": all_probs
     })
 
     file_path = f"model_outputs_data/model_prediction_logs/{model_keyword}_labels_predictions.csv"
     results_df.to_csv(file_path, index=False)
     print(f"\n Predictions saved to {file_path}")
+
+# Function to check the class balance in a DataLoader.
+def check_class_balance(loader, dataset_name):
+    class_counts = Counter()
+
+    for _, labels in loader:
+        # If labels are in Tensor format, convert them to a list
+        labels = labels.tolist()
+        class_counts.update(labels)
+
+    print(f"Class distribution in {dataset_name}:")
+    total_samples = sum(class_counts.values())
+    for cls, count in class_counts.items():
+        print(f"  Class {cls}: {count} samples ({(count / total_samples) * 100:.2f}%)")
+    print()
