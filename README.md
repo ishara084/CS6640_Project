@@ -13,7 +13,6 @@
     |-- TrasnferLearning_GoogleNet_Inception_V1.ipynb                 ------------> Pretrained GoogleNet(Inception v1) Model
     |-- TrasnferLearning_GoogleNet_Inception_v3.ipynb                 ------------> Pretrained GoogleNet(Inception v3) Model
     |-- TrasnferLearning_ResNet50.ipynb                               ------------> Pretrained ResNet50 Model
-    |-- TrasnferLearning_ResNet50_local_pretrained_model.ipynb        ------------> Pretrained ResNet50 Model (For testing only. Not included in the report)
     |-- data                                                          ------------> Contain original data
     |   |-- test.csv                                                  ------------> Contains image name, ground thruth for Test data
     |   |-- train.csv                                                 ------------> Contains image name, ground thruth for Training data
@@ -64,8 +63,8 @@
   - Ignore these files(some additional work I did, just out of curiosity. But NOT relevant to the project/report. I didn't remove these just in case if I wanted to work on this in future) :
   - ```TransferLearning_yolo.ipynb```, ```TrasnferLearning_VGG16.ipynb```, ```TrasnferLearning_SqueezeNet.ipynb```
     - YOLO was also included in the code as a test and it performed well(F1 = 0.94), but it was not included in the report because it's often considered as a segmentation model rather than classification. 
-    - Another two models (VGG16, SqueezeNet) was tested and performance was really low compared to other models. Did not include them because; Training time was very long(VGG16 specifically) making it difficult to test the model and do necessary adjustment
-    - It's difficult to conclude their performance without further investigations, therefore this was simply ignored.
+    - Another two models (VGG16, SqueezeNet) was tested and did not include them because; Training time was very long(VGG16 specifically) making it difficult to test the model and do necessary adjustment.
+    - It's difficult to conclude their performance without further investigations, therefore they were simply ignored.
 
 
 
