@@ -41,28 +41,33 @@
     |-- runs                                                          ------------> Output directory for saving model training of  YOLO model (Automatically created)
 ```
 
-## Notes
-  - Data transformation/processing is done in utils.py to maintain the consistency
-  - Each model has a separate notebook with annotations. This is for clarity and to tweak the model architecture if needed.
+## Read this
+  - Data transformation/processing for each model is done in ```utils.py``` to maintain the consistency
+  - Each model has a separate notebook with annotations and comments. This is for clarity and to tweak the model architecture if needed.
   - In model training loop, the best version of the model is saved based on validation loss if I need to train it more later(It wasn't really important and did not push to the repo).
   - Logging:
-    - Logs(Epoch, Train_Loss, Validation_Loss, Validation_Accuracy, FLOPs) and metrics during training are logged in ```model_outputs_data/model_evaluation_logs``` directory for comparisons.
-    - Logs(true_labels, predicted_labels, positive_probabilities) of model performance on test data are logged in ```model_outputs_data/model_prediction_logs``` directory for comparisons.
-    - These logs are used in ```Model_results_visualization``` for results discussion and visualization
-  - Ignore these files(Some additional work I did, just out of curiosity. But NOT relevant to the report. I didn't remove these just in case if I wanted to work on this in future) :
-    - ```TransferLearning_yolo.ipynb```, ```TrasnferLearning_VGG16.ipynb```, ```TrasnferLearning_SqueezeNet.ipynb```
-    - YOLO was also included in the code as a test and it performed well(F1 = 0.94), but it was not included in the report because it's often considered as a segmentation model rather than classification. 
-    - Another two models (VGG16, SqueezeNet) was tested and performance was really low compared to other models. Did not include them because; Training time was very long(VGG16 specifically) making it difficult to test the model and do necessary adjustment
-    - It's difficult to conclude their performance without further investigations, therefore this was simply ignored.
+    - Training Logs(Epoch, Train_Loss, Validation_Loss, Validation_Accuracy, FLOPs) during training were recorded in ```model_outputs_data/model_evaluation_logs``` 
+    - Model evaluation logs(true_labels, predicted_labels, positive_probabilities) on test data were logged in ```model_outputs_data/model_prediction_logs``` 
+    - These logs are used in ```Model_results_visualization``` for comparison, results discussion and visualization
 
 ##  Steps to execute
 - Install necessary libraries before executing the notebook files
-  - ```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124``` (I used CUDA for GPU performance, but the code works without it, taking a longer time)
-  - ```pip install tensorflow[and-cuda]```
+  - ```pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124``` (I used CUDA for GPU performance utilization, but the code works without it, just taking a longer time)
+  - ```pip install tensorflow[and-cuda]``` (tf used for some testing stuff, not for main 6 models)
   - ```pip install -U scikit-learn```
   - ```pip install pandas```
   - ```pip install matplotlib```
   - ```pip install ptflops```
+  - That's it! You're good to go. If you don't want to execute models you can check out training and testing logs of model outputs.
+
+##### Ignore these :
+  - Ignore these files(some additional work I did, just out of curiosity. But NOT relevant to the project/report. I didn't remove these just in case if I wanted to work on this in future) :
+  - ```TransferLearning_yolo.ipynb```, ```TrasnferLearning_VGG16.ipynb```, ```TrasnferLearning_SqueezeNet.ipynb```
+    - YOLO was also included in the code as a test and it performed well(F1 = 0.94), but it was not included in the report because it's often considered as a segmentation model rather than classification. 
+    - Another two models (VGG16, SqueezeNet) was tested and performance was really low compared to other models. Did not include them because; Training time was very long(VGG16 specifically) making it difficult to test the model and do necessary adjustment
+    - It's difficult to conclude their performance without further investigations, therefore this was simply ignored.
+
+
 
 Source of the Images & Access Conditions
 - Dataset used: https://www.kaggle.com/competitions/internal-waves/data
